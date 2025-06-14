@@ -59,7 +59,7 @@ graph TD
     E --> F
     F --> G[Database]
     F --> H[Redis Cache]
-    F --> I[Storage Backend (S3)]
+    F --> I[Storage Backend]
 ```
 ### Componentes clave
 
