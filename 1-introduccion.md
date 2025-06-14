@@ -59,7 +59,7 @@ graph TD
     E --> F
     F --> G[Database]
     F --> H[Redis Cache]
-    G --> I[Storage Backend (S3)]
+    F --> I[Storage Backend (S3)]
 ```
 ### Componentes clave
 
@@ -74,10 +74,10 @@ graph TD
       - Referencias mediante hashes SHA-1
 
 ```mermaid
-    graph LR
-        A[Commit] --> B[Tree]
-        B --> C[Blob (file1.txt)]
-        B --> D[Blob (file2.jpg)]
+graph LR
+    A[Commit] --> B[Tree]
+    B --> C[Blob_file1.txt]
+    B --> D[Blob_file2.jpg]
 ```
 #### GitHub Actions
 - Ejecución en runners efímeros (VM/containers)
