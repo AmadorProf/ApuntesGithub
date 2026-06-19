@@ -313,3 +313,135 @@ La elección de la estrategia de ramificación depende de varios factores: tama�
 Las herramientas como rebase interactivo, hooks y automatización pueden mejorar significativamente la calidad y eficiencia del flujo de trabajo, independientemente de la estrategia elegida.
 
 **Siguiente**: 7. Resolución de Problemas y Recuperación de Datos
+
+---
+
+## Ejercicios
+
+**6.1** — Implementa un flujo **Git Flow** básico desde cero: crea las ramas `main`, `develop`, `feature/login`, haz merge de feature a develop, crea una rama `release/1.0.0`, etiqueta el merge a main como `v1.0.0`.
+
+**6.2** — Crea un hook **pre-commit** que impida hacer commit si hay archivos `.log` en el staging area. Prueba que funciona intentando añadir un `error.log`.
+
+**6.3** — Crea un escenario con una rama `feature` que tenga 3 commits sobre `main`. Genera el merge con `--no-ff` y el mismo escenario con `rebase`. Compara los historiales con `git log --oneline --graph`.
+
+**6.4** — Tienes una rama con 5 commits: 2 wip, 1 fix de typo, 1 feat real y 1 docs. Usa `rebase -i` para limpiarla: squash de los wip con el feat, fixup del typo con el feat, dejando solo 2 commits (`feat` + `docs`).
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**6.1**
+
+```sh
+git init proyecto && cd proyecto
+echo "v0" > app.txt && git add . && git commit -m "chore: initial commit"
+
+# Crear develop
+git checkout -b develop
+
+# Feature
+git checkout -b feature/login
+echo "login()" > login.js && git add . && git commit -m "feat: add login"
+git checkout develop
+git merge --no-ff feature/login -m "merge: feature/login into develop"
+
+# Release
+git checkout -b release/1.0.0
+echo "1.0.0" > VERSION && git add . && git commit -m "chore: bump to 1.0.0"
+
+# Merge a main y tag
+git checkout main
+git merge --no-ff release/1.0.0 -m "release: 1.0.0"
+git tag -a v1.0.0 -m "Version 1.0.0"
+
+# Merge de vuelta a develop
+git checkout develop
+git merge release/1.0.0
+git branch -d release/1.0.0
+```
+
+---
+
+**6.2**
+
+```sh
+# Crear hook
+cat > .git/hooks/pre-commit << 'EOF'
+#!/bin/sh
+if git diff --cached --name-only | grep -q '\.log$'; then
+  echo "ERROR: No puedes hacer commit de archivos .log"
+  exit 1
+fi
+EOF
+chmod +x .git/hooks/pre-commit
+
+# Prueba
+echo "error" > error.log
+git add error.log
+git commit -m "test"
+# ERROR: No puedes hacer commit de archivos .log
+```
+
+---
+
+**6.3**
+
+```sh
+# Escenario base
+git checkout -b base-merge main
+git checkout -b feature-merge base-merge
+for i in 1 2 3; do echo "$i" > "f$i.txt" && git add . && git commit -m "feat: $i"; done
+
+# MERGE
+git checkout base-merge
+git merge --no-ff feature-merge -m "merge: feature"
+git log --oneline --graph
+# *   merge: feature
+# |# | * feat: 3
+# | * feat: 2
+# | * feat: 1
+# |/
+
+# REBASE (escenario equivalente)
+git checkout -b base-rebase main
+git checkout -b feature-rebase base-rebase
+for i in 1 2 3; do echo "$i" > "g$i.txt" && git add . && git commit -m "feat: $i"; done
+git checkout feature-rebase
+git rebase base-rebase
+git checkout base-rebase
+git merge feature-rebase   # fast-forward
+git log --oneline --graph
+# * feat: 3
+# * feat: 2
+# * feat: 1
+# Historial lineal, sin commit de merge
+```
+
+---
+
+**6.4**
+
+```sh
+git log --oneline
+# e feat: docs
+# d feat: función principal
+# c fix: typo en variable
+# b wip: más lógica
+# a wip: inicio
+
+git rebase -i HEAD~5
+# Cambiar a:
+# pick a wip: inicio      → (será squash)
+# squash b wip: más lógica
+# squash c fix: typo en variable   → fixup
+# pick d feat: función principal
+# pick e feat: docs
+
+# Resultado: 2 commits
+git log --oneline
+# xyz feat: docs
+# abc feat: función principal (absorbe los wip y el typo)
+```
+
+</details>

@@ -204,3 +204,100 @@ graph LR
 ---
 
 Siguiente: [Ramas y Fusiones](4-ramas.md)  
+
+---
+
+## Ejercicios
+
+**3.1** — Crea un repositorio local desde cero. Añade un archivo `README.md` con tu nombre, haz `add` y `commit`. Muestra el historial con `git log --oneline`.
+
+**3.2** — Modifica el `README.md` añadiendo una segunda línea. Antes de hacer commit, muestra los cambios con `git diff`. Luego añade el archivo al staging y verifica el estado con `git status`.
+
+**3.3** — Crea 3 commits con mensajes en formato **Conventional Commits** (`feat:`, `fix:`, `docs:`). Muestra el historial final con `git log --oneline`.
+
+**3.4** — El último commit tiene un mensaje poco descriptivo. Usa `git commit --amend` para corregirlo sin crear un commit nuevo. ¿Cuándo **no** deberías usar `--amend`?
+
+**3.5** — Clona el repositorio público `https://github.com/torvalds/linux` de forma superficial (solo el último commit, sin historial completo). ¿Cuánto ocupa la carpeta clonada comparada con un clone normal? _(Solo ejecuta el clone superficial, no el completo si tu conexión es lenta.)_
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**3.1**
+
+```sh
+mkdir mi-proyecto && cd mi-proyecto
+git init
+echo "# Mi proyecto — Tu Nombre" > README.md
+git add README.md
+git commit -m "docs: add README"
+git log --oneline
+# a1b2c3d docs: add README
+```
+
+---
+
+**3.2**
+
+```sh
+echo "Segunda línea de contenido" >> README.md
+git diff
+# diff --git a/README.md b/README.md
+# +Segunda línea de contenido
+
+git add README.md
+git status
+# On branch main
+# Changes to be committed:
+#   modified:   README.md
+```
+
+---
+
+**3.3**
+
+```sh
+echo "función de login" > login.js
+git add login.js
+git commit -m "feat: add login function"
+
+echo "fix null check" >> login.js
+git add login.js
+git commit -m "fix: handle null user in login"
+
+echo "# Login" >> README.md
+git add README.md
+git commit -m "docs: document login module"
+
+git log --oneline
+# c3d4e5f docs: document login module
+# b2c3d4e fix: handle null user in login
+# a1b2c3d feat: add login function
+```
+
+---
+
+**3.4**
+
+```sh
+git commit --amend -m "docs: document login module with usage examples"
+git log --oneline
+# el hash cambia, pero solo hay 1 commit nuevo
+```
+
+**No debes usar `--amend`** si el commit ya está subido al repositorio remoto (`git push`), porque reescribe el historial y causará conflictos a otros colaboradores.
+
+---
+
+**3.5**
+
+```sh
+git clone --depth 1 https://github.com/torvalds/linux linux-shallow
+du -sh linux-shallow/
+# ~1.3 GB (solo el último snapshot, sin historial)
+```
+
+Un clone completo del kernel de Linux ocupa más de 4 GB. Con `--depth 1` se descarga solo el último commit, lo que es útil en CI/CD para acelerar las builds.
+
+</details>

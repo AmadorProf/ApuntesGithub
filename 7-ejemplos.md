@@ -638,3 +638,133 @@ git branch backup-mi-trabajo
 ```
 
 
+
+---
+
+## Ejercicios
+
+**7.1** — Reproduce el flujo completo de "proyecto nuevo desde cero": crea un repositorio local, añade un `.gitignore` para Python, haz 3 commits significativos y súbelo a GitHub como repositorio público.
+
+**7.2** — Crea un `.gitignore` adecuado para un proyecto **Node.js** que ignore: `node_modules/`, archivos `.env`, logs, archivos de build y los artefactos de los editores más comunes (VS Code, JetBrains).
+
+**7.3** — Estás en `main` desarrollando una funcionalidad cuando te piden que soluciones urgentemente un bug en otra rama. Usa `git stash` para guardar tu trabajo en curso, cambia a la rama `hotfix`, realiza el fix, vuelve a `main` y recupera tu trabajo con `git stash pop`.
+
+**7.4** — Crea el tag `v1.0.0` anotado en el último commit de `main`. Sube el tag a GitHub con `git push origin v1.0.0`. Comprueba que aparece en la sección **Tags** del repositorio en GitHub.
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**7.1**
+
+```sh
+mkdir mi-app-python && cd mi-app-python
+git init
+
+# .gitignore para Python
+curl -o .gitignore https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore
+# o crearlo manualmente: __pycache__/, *.pyc, .env, venv/, dist/, *.egg-info/
+
+git add .gitignore
+git commit -m "chore: add Python .gitignore"
+
+echo "# Mi App Python" > README.md
+git add . && git commit -m "docs: add README"
+
+echo "print('Hello')" > main.py
+git add . && git commit -m "feat: add main entrypoint"
+
+# Subir a GitHub
+gh repo create mi-app-python --public --source=. --push
+```
+
+---
+
+**7.2**
+
+```
+# .gitignore para Node.js
+
+# Dependencias
+node_modules/
+.npm
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+```
+
+---
+
+**7.3**
+
+```sh
+# Estás trabajando en main
+echo "trabajo sin terminar" > wip.js
+git add wip.js
+
+# Guardar trabajo
+git stash push -m "wip: nueva funcionalidad de login"
+
+# Cambiar a hotfix y hacer el fix
+git checkout -b hotfix
+echo "fix aplicado" > bugfix.js
+git add . && git commit -m "fix: resolve null pointer in auth"
+git checkout main
+git merge hotfix --no-ff -m "merge: hotfix"
+git branch -d hotfix
+
+# Recuperar trabajo guardado
+git stash pop
+git status
+# Changes to be committed:
+#   new file: wip.js
+```
+
+---
+
+**7.4**
+
+```sh
+# Crear tag anotado
+git tag -a v1.0.0 -m "Primera versión estable"
+
+# Ver el tag
+git show v1.0.0
+
+# Subir a GitHub
+git push origin v1.0.0
+
+# Para subir todos los tags a la vez:
+# git push origin --tags
+```
+
+En GitHub: repositorio → sección **Releases** (o **Tags**) → aparece `v1.0.0`.  
+Desde ahí puedes convertirlo en una **Release** añadiendo notas de la versión.
+
+</details>

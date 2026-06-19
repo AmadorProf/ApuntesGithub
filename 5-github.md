@@ -171,3 +171,101 @@ graph TB
 - GitHub Actions y Projects optimizan flujos de trabajo.
 
 **Siguiente**: 6. Ramas Avanzadas y Git Flow
+
+---
+
+## Ejercicios
+
+**5.1** — Crea un repositorio vacío en GitHub (sin README). Conéctalo con un repositorio local existente y sube todos los commits con `git push -u origin main`.
+
+**5.2** — Haz fork del repositorio `https://github.com/firstcontributions/first-contributions`. Clona tu fork, crea una rama `feature/tu-nombre`, añade tu nombre al fichero indicado y abre un Pull Request al repositorio original.
+
+**5.3** — En un repositorio propio, crea un Issue titulado "Añadir página de contacto". Luego haz un commit que lo cierre automáticamente usando la palabra clave `Closes #1` en el mensaje.
+
+**5.4** — Configura autenticación SSH para GitHub: genera una clave `ed25519`, añade la clave pública a tu cuenta de GitHub y verifica la conexión con `ssh -T git@github.com`.
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**5.1**
+
+```sh
+# En GitHub: New repository → sin README, sin .gitignore
+
+# En local
+cd mi-proyecto
+git remote add origin https://github.com/tu-usuario/mi-proyecto.git
+git branch -M main
+git push -u origin main
+
+# Verificar
+git remote -v
+# origin  https://github.com/tu-usuario/mi-proyecto.git (fetch)
+# origin  https://github.com/tu-usuario/mi-proyecto.git (push)
+```
+
+---
+
+**5.2**
+
+```sh
+# 1. Fork en GitHub (botón Fork en la página del repo)
+
+# 2. Clonar tu fork
+git clone https://github.com/tu-usuario/first-contributions.git
+cd first-contributions
+
+# 3. Crear rama y hacer cambio
+git checkout -b feature/tu-nombre
+# Editar Contributors.md añadiendo tu nombre
+git add Contributors.md
+git commit -m "feat: add Tu Nombre to contributors"
+
+# 4. Subir rama a tu fork
+git push origin feature/tu-nombre
+
+# 5. En GitHub: Compare & pull request → base: firstcontributions/first-contributions
+```
+
+---
+
+**5.3**
+
+```sh
+# En GitHub: Issues → New issue → "Añadir página de contacto" → Submit
+
+# En local
+echo "<section>Contacto</section>" > contacto.html
+git add contacto.html
+git commit -m "feat: add contact page. Closes #1"
+git push
+
+# El Issue #1 se cerrará automáticamente al hacer push a la rama principal
+```
+
+---
+
+**5.4**
+
+```sh
+# 1. Generar clave
+ssh-keygen -t ed25519 -C "tu@email.com"
+# Acepta la ruta por defecto (~/.ssh/id_ed25519)
+
+# 2. Copiar clave pública
+cat ~/.ssh/id_ed25519.pub
+# Copia el resultado
+
+# 3. En GitHub: Settings → SSH and GPG keys → New SSH key → pega la clave
+
+# 4. Verificar
+ssh -T git@github.com
+# Hi tu-usuario! You've successfully authenticated, but GitHub does not provide shell access.
+
+# 5. Cambiar remote a SSH
+git remote set-url origin git@github.com:tu-usuario/mi-proyecto.git
+```
+
+</details>

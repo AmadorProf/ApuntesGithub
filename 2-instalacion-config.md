@@ -157,3 +157,90 @@ graph TD
 
 
 
+
+---
+
+## Ejercicios
+
+**2.1** — Instala Git en tu sistema y verifica la instalación. Configura tu nombre y correo de forma global. Después muestra la configuración actual.
+
+```sh
+# Pista: git --version | git config --global ... | git config --list
+```
+
+**2.2** — Crea los siguientes aliases en tu `.gitconfig` y comprueba que funcionan:
+- `lg` → `log --oneline --graph --all --decorate`
+- `st` → `status -sb`
+- `undo` → `reset HEAD~1 --soft`
+
+**2.3** — ¿Cuándo usarías `git config --local` en lugar de `git config --global`? Pon un ejemplo concreto de una configuración que tendría sentido definir a nivel local.
+
+**2.4** — Abre el fichero `~/.gitconfig` con un editor y añade manualmente (sin usar `git config`) un alias `aliases` que ejecute `config --get-regexp alias`. Úsalo para listar todos tus aliases.
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**2.1**
+
+```sh
+git --version
+# git version 2.44.0
+
+git config --global user.name "Tu Nombre"
+git config --global user.email "tu@email.com"
+
+git config --list
+# user.name=Tu Nombre
+# user.email=tu@email.com
+```
+
+---
+
+**2.2**
+
+```sh
+git config --global alias.lg "log --oneline --graph --all --decorate"
+git config --global alias.st "status -sb"
+git config --global alias.undo "reset HEAD~1 --soft"
+
+# Prueba:
+git lg
+git st
+```
+
+---
+
+**2.3**
+
+`--local` tiene sentido para configuraciones específicas de un proyecto, por ejemplo:
+- Un email diferente si en ese repo trabajas con tu cuenta de empresa en lugar de la personal.
+- Un editor diferente solo para ese proyecto.
+- Un hook o configuración de merge tool específica del equipo.
+
+```sh
+cd mi-proyecto-empresa
+git config --local user.email "amador@empresa.com"
+```
+
+---
+
+**2.4**
+
+Edita `~/.gitconfig` y añade bajo `[alias]`:
+```ini
+[alias]
+    aliases = config --get-regexp alias
+```
+
+Luego ejecuta:
+```sh
+git aliases
+# alias.lg log --oneline --graph --all --decorate
+# alias.st status -sb
+# alias.undo reset HEAD~1 --soft
+# alias.aliases config --get-regexp alias
+```
+
+</details>
