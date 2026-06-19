@@ -1,0 +1,8 @@
+title: Git y GitHub para DAW
+description: Apuntes prácticos de Git y GitHub para FP de grado superior — módulos 1–10
+theme: jekyll-theme-cayman
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

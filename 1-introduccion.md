@@ -167,3 +167,52 @@ gitGraph
   - GC periódico
 
 Siguiente: [Instalación y Configuración](2-instalacion-config.md)  
+
+---
+
+## Ejercicios
+
+**1.1** — Explica con tus propias palabras la diferencia entre Git y GitHub. ¿Pueden existir el uno sin el otro?
+
+**1.2** — ¿Por qué Git usa hashes SHA-1 para identificar commits en lugar de números correlativos (v1, v2, v3...)? ¿Qué ventaja aporta en un sistema distribuido?
+
+**1.3** — Imagina que guardas versiones de tu proyecto renombrando carpetas: `proyecto_v1/`, `proyecto_v2_final/`, `proyecto_v2_final_DEFINITIVO/`. Enumera al menos 3 problemas concretos que este método tiene y que Git resuelve.
+
+**1.4** — ¿Qué diferencia hay entre un repositorio **centralizado** (SVN) y uno **distribuido** (Git) en caso de que el servidor principal se caiga?
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**1.1**
+
+**Git** es el sistema de control de versiones: el programa que registra cambios, gestiona ramas y permite viajar en el historial — todo ello en local, sin conexión.  
+**GitHub** es una plataforma web que aloja repositorios Git remotos y añade herramientas de colaboración (PRs, Issues, Actions, Pages…).
+
+Pueden existir de forma independiente: puedes usar Git sin GitHub (con otro remoto o solo local) y GitHub sin Git no tendría sentido.
+
+---
+
+**1.2**
+
+El hash SHA-1 se calcula a partir del contenido del commit (árbol de ficheros, mensaje, autor, fecha, hash del padre). Esto significa que dos desarrolladores que partan del mismo estado y hagan el mismo commit obtendrán **el mismo hash**, sin necesidad de coordinarse con ningún servidor central. Con números correlativos habría colisiones.
+
+---
+
+**1.3**
+
+Problemas del método de carpetas:
+1. **Sin historial de cambios internos**: sabes qué versión es, pero no _qué línea cambió_ entre una y otra.
+2. **Sin ramas**: no puedes trabajar en dos funcionalidades a la vez sin duplicar todo el proyecto.
+3. **Sin colaboración**: si dos personas modifican el mismo archivo en sus copias, reconciliar los cambios es manual.
+4. **Espacio**: cada versión duplica el proyecto entero aunque solo hayan cambiado 3 líneas.
+
+---
+
+**1.4**
+
+Con SVN, si el servidor cae **nadie puede hacer commits ni ver el historial** — todo está centralizado.  
+Con Git, cada desarrollador tiene una copia completa del repositorio, por lo que puede seguir trabajando (commits locales, explorar historial) aunque el servidor esté caído. Solo las operaciones de sincronización (push/pull) requieren conexión.
+
+</details>

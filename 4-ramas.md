@@ -712,3 +712,146 @@ git reset --hard HEAD@{antes-del-rebase}
 | `git log --graph` | Ver historial gráfico |
 
 
+
+---
+
+## Ejercicios
+
+**4.1** — Crea una rama `feature/formulario`. Haz 2 commits en ella. Vuelve a `main` y fusiona con `--no-ff`. ¿Qué diferencia hay en el historial con respecto a un merge sin `--no-ff`?
+
+**4.2** — Simula un conflicto: crea dos ramas que modifiquen la misma línea del mismo archivo. Fusiónelas en `main` y resuelve el conflicto manualmente. Documenta cada paso.
+
+**4.3** — Crea 4 commits consecutivos con mensajes "wip", "más wip", "esto ya funciona", "limpieza". Usa `git rebase -i HEAD~4` para dejarlos en un solo commit con mensaje `feat: formulario de contacto`.
+
+**4.4** — En una rama `hotfix`, crea un commit que corrija un "bug". Desde `main`, usa `git cherry-pick` para aplicar solo ese commit sin fusionar toda la rama.
+
+**4.5** — Usa `git bisect` para encontrar un commit problemático. Crea 6 commits numerados; en el commit 4 introduce un "error" (por ejemplo un archivo `bug.txt`). Usa bisect marcando el commit 1 como bueno y el 6 como malo.
+
+<details markdown="1">
+<summary>Soluciones</summary>
+
+---
+
+**4.1**
+
+```sh
+git checkout -b feature/formulario
+echo "<form>" > formulario.html && git add . && git commit -m "feat: add form skeleton"
+echo "</form>" >> formulario.html && git add . && git commit -m "feat: close form tag"
+
+git checkout main
+git merge --no-ff feature/formulario -m "merge: feature/formulario"
+
+git log --oneline --graph
+# *   abc merge: feature/formulario
+# |# | * def feat: close form tag
+# | * ghi feat: add form skeleton
+# |/
+# * jkl commit anterior de main
+```
+
+Sin `--no-ff`, si `main` no tenía commits nuevos se haría un fast-forward: los commits de la rama quedarían en línea directa y no habría evidencia de que existió una rama separada.
+
+---
+
+**4.2**
+
+```sh
+# Crear archivo base
+echo "color: rojo" > config.txt
+git add . && git commit -m "feat: add config"
+
+# Rama A cambia la línea
+git checkout -b rama-a
+sed -i '' 's/rojo/azul/' config.txt
+git add . && git commit -m "feat: change to blue"
+
+# Rama B también cambia la misma línea
+git checkout main
+git checkout -b rama-b
+sed -i '' 's/rojo/verde/' config.txt
+git add . && git commit -m "feat: change to green"
+
+# Fusionar: rama-a primero, luego rama-b
+git checkout main
+git merge rama-a
+git merge rama-b
+# CONFLICT: Merge conflict in config.txt
+
+# Editar config.txt y elegir el valor correcto
+nano config.txt  # elimina los marcadores <<<, ===, >>>
+git add config.txt
+git commit -m "fix: resolve color conflict"
+```
+
+---
+
+**4.3**
+
+```sh
+# Crear 4 commits
+echo "1" > form.js && git add . && git commit -m "wip"
+echo "2" >> form.js && git add . && git commit -m "más wip"
+echo "3" >> form.js && git add . && git commit -m "esto ya funciona"
+echo "4" >> form.js && git add . && git commit -m "limpieza"
+
+# Rebase interactivo
+git rebase -i HEAD~4
+# En el editor, cambiar los últimos 3 'pick' por 'squash' (o 'f')
+# pick abc wip
+# squash def más wip
+# squash ghi esto ya funciona
+# squash jkl limpieza
+
+# Git abrirá editor para el mensaje final:
+# "feat: formulario de contacto"
+
+git log --oneline
+# xyz feat: formulario de contacto
+```
+
+---
+
+**4.4**
+
+```sh
+# En rama hotfix
+git checkout -b hotfix
+echo "fix aplicado" > hotfix.txt
+git add . && git commit -m "fix: critical security patch"
+# Anota el hash del commit, ej: abc1234
+
+# Volver a main y cherry-pick
+git checkout main
+git cherry-pick abc1234
+git log --oneline
+# abc1234 fix: critical security patch  ← aparece en main
+```
+
+---
+
+**4.5**
+
+```sh
+# Crear 6 commits
+for i in 1 2 3 4 5 6; do
+  echo "version $i" > app.txt
+  [ "$i" = "4" ] && echo "error" > bug.txt && git add bug.txt
+  git add app.txt
+  git commit -m "commit $i"
+done
+
+# Iniciar bisect
+git bisect start
+git bisect bad          # commit 6 es malo (el actual)
+git bisect good HEAD~5  # commit 1 era bueno
+
+# Git va eligiendo commits intermedios
+# En cada uno: git bisect good o git bisect bad
+# Cuando encuentre el culpable:
+# "abc1234 is the first bad commit"
+
+git bisect reset  # volver al estado normal
+```
+
+</details>
