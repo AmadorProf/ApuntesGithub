@@ -173,6 +173,7 @@ git branch -d feature/user-authentication
 Rebase reescribe el historial moviendo commits de una rama a otra, creando un historial lineal.
 
 ### 4.2. Rebase vs Merge
+
 | Aspecto | Merge | Rebase |
 |---------|-------|--------|
 | **Historial** | Preserva historial real | Crea historial lineal |

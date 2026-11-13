@@ -39,7 +39,9 @@
 
     <main class="page-content" role="main">
 
-      {{ content }}
+      <div class="main-content">
+        {{ content }}
+      </div>
 
       {% assign modules = site.data.modules %}
       {% assign page_filename = page.path | remove: ".md" %}
@@ -168,7 +170,7 @@
   <!-- Mermaid — renderiza diagramas en bloques ```mermaid -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
-    mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    mermaid.initialize({ startOnLoad: false, theme: 'default', gitGraph: { rotateCommitLabel: false } });
     document.querySelectorAll('code.language-mermaid').forEach(function (el) {
       var div = document.createElement('div');
       div.className = 'mermaid';
