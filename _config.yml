@@ -1,6 +1,11 @@
 title: Git y GitHub para DAW
 description: Apuntes prácticos de Git y GitHub para FP de grado superior — módulos 1–10
 theme: jekyll-theme-cayman
+remote_theme: AmadorProf/jekyll-tema-apuntes
+github_repo: AmadorProf/ApuntesGithub
+mermaid: true
+plugins:
+  - jekyll-remote-theme
 defaults:
   - scope:
       path: ""
